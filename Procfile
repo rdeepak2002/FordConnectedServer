@@ -1,0 +1,1 @@
+web: java -jar target/fordconnected.server-1.0.jar

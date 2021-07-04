@@ -1,0 +1,27 @@
+scalar Date
+
+type Visit {
+  id: ID!
+  ip: String
+  browserId: String!
+  deviceId: String!
+  isMobile: Boolean
+  createdAt: Date!
+  lastVisited: Date!
+  previousDatesVisited: [Date]!
+}
+
+# Root
+type Query {
+  findAllVisits: [Visit]!
+  countVisits: Long!
+}
+
+# Root
+type Mutation {
+  createVisit(
+    browserId: String!
+    deviceId: String!
+    isMobile: Boolean
+  ): Visit!
+}
