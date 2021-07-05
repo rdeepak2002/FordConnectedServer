@@ -4,23 +4,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.coxautodev.graphql.tools.GraphQLQueryResolver;
-import com.deepdev.fordconnected.server.model.Visit;
-import com.deepdev.fordconnected.server.repository.VisitRepository;
+import com.deepdev.fordconnected.server.model.User;
+import com.deepdev.fordconnected.server.repository.UserRepository;
 
 @Component
 public class Query implements GraphQLQueryResolver {
-    private VisitRepository visitRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public Query(VisitRepository visitRepository) {
-        this.visitRepository = visitRepository;
+    public Query(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public Iterable<Visit> findAllVisits() {
-        return visitRepository.findAll();
+    public Iterable<User> findAllUsers() {
+        return userRepository.findAll();
     }
 
-    public long countVisits() {
-        return visitRepository.count();
+    public long countUsers() {
+        return userRepository.count();
     }
 }

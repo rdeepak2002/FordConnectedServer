@@ -1,27 +1,34 @@
 scalar Date
 
-type Visit {
+type User {
   id: ID!
-  ip: String
-  browserId: String!
-  deviceId: String!
-  isMobile: Boolean
+  username: String!
+  firstName: String!
+  lastName: String!
+  fordProfileId: String!
+  updatedAt: Date!
   createdAt: Date!
-  lastVisited: Date!
-  previousDatesVisited: [Date]!
 }
 
-# Root
+type UserWithToken {
+  userId: String!
+  fordProfileId: String!
+  accessToken: String!
+  accessExpiresAtSeconds: Long!
+  refreshToken: String!
+  refreshExpiresAtSeconds: Long!
+}
+
 type Query {
-  findAllVisits: [Visit]!
-  countVisits: Long!
+  findAllUsers: [User]!
+  countUsers: Long!
 }
 
-# Root
 type Mutation {
-  createVisit(
-    browserId: String!
-    deviceId: String!
-    isMobile: Boolean
-  ): Visit!
+  loginUser(
+    username: String!
+    firstName: String!
+    lastName: String!
+    code: String!
+  ): UserWithToken!
 }
