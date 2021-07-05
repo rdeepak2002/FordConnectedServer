@@ -33,13 +33,6 @@ public class Mutation implements GraphQLMutationResolver {
     LocalDateTime currentTime = LocalDateTime.now();
     long currentTimestampSeconds = System.currentTimeMillis() / 1000;
 
-    // create the user or get the current user with the username passed in
-    Optional<User> userWithSameUsername = userRepository.findByUsername(username);
-    User user = userWithSameUsername.isPresent() ? userWithSameUsername.get() : new User();
-
-    // declare response
-    UserWithToken response = new UserWithToken();
-
     // make request to ford api
     OkHttpClient client = new OkHttpClient().newBuilder().build();
     MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
@@ -61,6 +54,13 @@ public class Mutation implements GraphQLMutationResolver {
       String refreshToken = Jobject.get("refresh_token").toString(); // refresh_token field
       long refreshExpiresAtSeconds = currentTimestampSeconds
           + Long.parseLong(Jobject.get("refresh_token_expires_in").toString()); // refresh_token_expires_in field
+
+      // create the user or get the current user with the username passed in
+      Optional<User> userWithSameUsername = userRepository.findByUsername(username);
+      User user = userWithSameUsername.isPresent() ? userWithSameUsername.get() : new User();
+
+      // declare response
+      UserWithToken response = new UserWithToken();
 
       // update the user
       if (!userWithSameUsername.isPresent()) {
