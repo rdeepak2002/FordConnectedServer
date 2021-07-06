@@ -162,12 +162,12 @@ public class Mutation implements GraphQLMutationResolver {
         return response;
       }
       else {
-        throw new CustomException(500, "refreshTokens Error: user not registered");
+        throw new CustomException(510, "refreshTokens Error: user not registered");
       }
     }
     catch(Exception e) {
       e.printStackTrace();
-      throw new CustomException(500, "refreshTokens Error: invalid refresh token");
+      throw new CustomException(511, "refreshTokens Error: invalid refresh token");
     }
   }
 }
