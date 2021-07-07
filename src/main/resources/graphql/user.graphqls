@@ -8,6 +8,8 @@ type User {
   fordProfileId: String!
   updatedAt: Date!
   createdAt: Date!
+  lastActive: Date!
+  vehicles: [Vehicle]!
 }
 
 type UserWithToken {
