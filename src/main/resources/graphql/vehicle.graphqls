@@ -2,4 +2,30 @@ scalar Date
 
 type Vehicle {
   id: ID!
+  userId: String!
+  fordProfileId: String!
+  make: String
+  modelName: String
+  modelYear: String
+  color: String
+  nickname: String
+  modemEnabled: Boolean
+  vehicleAuthorizationIndicator: Int
+  serviceCompatible: Boolean
+  lastUpdated: Date
+  engineType: String
+  fuelLevelValue: Float
+  fuelLevelDistanceToEmpty: Float
+  mileage: Float
+  odometer: Float
+  remoteStartStatus: String
+  chargingStatusValue: String
+  ignitionStatusValue: String
+  doorStatus: String
+  vehicleLocationLongitude: Float
+  vehicleLocationLatitude: Float
+  vehicleLocationSpeed: Float
+  vehicleLocationDirection: String
+  createdAt: Date
+  updatedAt: Date
 }
