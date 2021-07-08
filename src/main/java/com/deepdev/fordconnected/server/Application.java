@@ -15,9 +15,14 @@ import io.lettuce.core.RedisURI;
 @SpringBootApplication
 @EnableCaching
 public class Application {
-  // get redis url from environment
-  @Value("${REDIS_URL}")
-  private String REDIS_URL;
+  @Value("${REDIS_ENDPOINT}")
+  private String REDIS_ENDPOINT;
+
+  @Value("${REDIS_PORT}")
+  private String REDIS_PORT;
+
+  @Value("${REDIS_PASSWORD}")
+  private String REDIS_PASSWORD;
 
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);
@@ -25,12 +30,11 @@ public class Application {
 
   @Bean
   JedisConnectionFactory jedisConnectionFactory() {
-    RedisURI redisURI = RedisURI.create(REDIS_URL);
+    RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(REDIS_ENDPOINT,
+        Integer.parseInt(REDIS_PORT));
 
-    RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisURI.getHost(),
-        redisURI.getPort());
-    if (redisURI.getPassword() != null) {
-      redisStandaloneConfiguration.setPassword(RedisPassword.of(redisURI.getPassword()));
+    if (REDIS_PASSWORD != null) {
+      redisStandaloneConfiguration.setPassword(RedisPassword.of(REDIS_PASSWORD));
     }
 
     return new JedisConnectionFactory(redisStandaloneConfiguration);
