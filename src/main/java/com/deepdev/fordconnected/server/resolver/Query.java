@@ -9,18 +9,14 @@ import com.deepdev.fordconnected.server.repository.UserRepository;
 
 @Component
 public class Query implements GraphQLQueryResolver {
-    private UserRepository userRepository;
+  private UserRepository userRepository;
 
-    @Autowired
-    public Query(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+  @Autowired
+  public Query(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
-    public Iterable<User> findAllUsers() {
-        return userRepository.findAll();
-    }
-
-    public long countUsers() {
-        return userRepository.count();
-    }
+  public Iterable<User> findAllUsers() {
+    return userRepository.findAll();
+  }
 }

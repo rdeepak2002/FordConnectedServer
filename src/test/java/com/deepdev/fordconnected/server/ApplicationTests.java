@@ -1,4 +1,4 @@
-package com.deepdev.rdeepak2002.server;
+package com.deepdev.fordconnected.server;
 
 import org.springframework.boot.test.context.SpringBootTest;
 

@@ -10,8 +10,6 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import io.lettuce.core.RedisURI;
-
 @SpringBootApplication
 @EnableCaching
 public class Application {

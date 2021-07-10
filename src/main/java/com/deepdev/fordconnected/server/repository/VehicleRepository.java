@@ -12,7 +12,7 @@ public interface VehicleRepository extends MongoRepository<Vehicle, String> {
   Optional<Vehicle> findById(String id);
 
   @Query("{'userId' : ?0}")
-  Optional<Vehicle> findByUsername(String userId);
+  Iterable<Vehicle> findByUserId(String userId);
 
   @Query("{'fordProfileId' : ?0}")
   Optional<Vehicle> findByFordProfileId(String fordProfileId);
