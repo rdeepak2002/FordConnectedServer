@@ -104,6 +104,9 @@ public class Mutation implements GraphQLMutationResolver {
       accessTokenObj.setFordProfileId(fordProfileId);
       accessTokenRepository.save(accessTokenObj);
 
+      // update the list of vehicles for the user
+      updateUserVehicles(accessToken);
+
       // retun the tokens, expiry times, and ford user id
       return response;
     } catch (Exception e) {
