@@ -97,12 +97,15 @@ public class Mutation implements GraphQLMutationResolver {
       user.setUpdatedAt(currentTime);
       userRepository.save(user);
 
+      // update vehicles for the user
+      updateUserVehicles(accessToken);
+
       // cache access token
       AccessToken accessTokenObj = new AccessToken();
       accessTokenObj.setId(accessToken);
       accessTokenObj.setAccessToken(accessToken);
       accessTokenObj.setFordProfileId(fordProfileId);
-      accessTokenRepository.save(accessTokenObj);
+      accessTokenRepository.save(accessTokenObj);       
 
       // retun the tokens, expiry times, and ford user id
       return response;
