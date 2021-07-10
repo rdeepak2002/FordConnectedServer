@@ -61,12 +61,12 @@ public class Mutation implements GraphQLMutationResolver {
       JSONObject Jobject = new JSONObject(responseString);
 
       // get variables from response of request made to ford api
-      String fordProfileId = Jobject.get("profile_info").toString(); // profile_info field
-      String accessToken = Jobject.get("access_token").toString(); // access_token field
-      long accessExpiresAtSeconds = Long.parseLong(Jobject.get("expires_on").toString()); // expires_on field
-      String refreshToken = Jobject.get("refresh_token").toString(); // refresh_token field
-      long refreshExpiresAtSeconds = currentTimestampSeconds
-          + Long.parseLong(Jobject.get("refresh_token_expires_in").toString()); // refresh_token_expires_in field
+      String fordProfileId = Jobject.getString("profile_info"); // profile_info field
+      String accessToken = Jobject.getString("access_token"); // access_token field
+      long accessExpiresAtSeconds = Jobject.getLong("expires_on"); // expires_on field
+      String refreshToken = Jobject.getString("refresh_token"); // refresh_token field
+      long refreshExpiresAtSeconds = currentTimestampSeconds + Jobject.getLong("refresh_token_expires_in"); // refresh_token_expires_in
+                                                                                                            // field
 
       // create the user or get the current user with the username passed in
       Optional<User> userWithSameUsername = userRepository.findByUsername(username);
@@ -97,15 +97,12 @@ public class Mutation implements GraphQLMutationResolver {
       user.setUpdatedAt(currentTime);
       userRepository.save(user);
 
-      // update vehicles for the user
-      updateUserVehicles(accessToken);
-
       // cache access token
       AccessToken accessTokenObj = new AccessToken();
       accessTokenObj.setId(accessToken);
       accessTokenObj.setAccessToken(accessToken);
       accessTokenObj.setFordProfileId(fordProfileId);
-      accessTokenRepository.save(accessTokenObj);       
+      accessTokenRepository.save(accessTokenObj);
 
       // retun the tokens, expiry times, and ford user id
       return response;
@@ -191,8 +188,6 @@ public class Mutation implements GraphQLMutationResolver {
 
     // check if the access token was generated on this server
     Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
-
-    // System.out.println("toast 2 " + possibleAccessToken.get().toString());
 
     if (possibleAccessToken.isPresent()) {
       try {
