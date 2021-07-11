@@ -188,17 +188,17 @@ public class Mutation implements GraphQLMutationResolver {
   }
 
   public User addFriend(String accessToken, String userId) {
-      // get the current time
-      LocalDateTime currentTime = LocalDateTime.now();
+    // get the current time
+    LocalDateTime currentTime = LocalDateTime.now();
 
     // search for the access token and user from databases
     Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
     Optional<User> possibleFriend = userRepository.findById(userId);
 
-    if(possibleAccessToken.isPresent() && possibleFriend.isPresent()) {
+    if (possibleAccessToken.isPresent() && possibleFriend.isPresent()) {
       Optional<User> possibleUser = userRepository.findByFordProfileId(possibleAccessToken.get().getFordProfileId());
 
-      if(possibleUser.isPresent()) {
+      if (possibleUser.isPresent()) {
         // get the current user and the friend to add
         User user = possibleUser.get();
         User friend = possibleFriend.get();
