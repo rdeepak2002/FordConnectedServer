@@ -13,6 +13,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -211,6 +212,8 @@ public class Mutation implements GraphQLMutationResolver {
     // check if the access token was generated on this server
     Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
 
+    List<Vehicle> vehicles = new ArrayList<Vehicle>();
+
     if (possibleAccessToken.isPresent()) {
       try {
         // get the access token object
@@ -311,7 +314,14 @@ public class Mutation implements GraphQLMutationResolver {
 
           // save vehicle in db
           vehicleRepository.save(vehicle);
+
+          // add vehicle to vehicles array
+          vehicles.add(vehicle);
         }
+
+        // update the user's vehicles
+        userObj.setVehicles(vehicles);
+        userRepository.save(userObj);
 
         // return all the user's vehicles
         return vehicleRepository.findAllByUserId(userObj.getId());
