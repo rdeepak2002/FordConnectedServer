@@ -10,6 +10,7 @@ type User {
   createdAt: Date!
   lastActive: Date!
   vehicles: [Vehicle]!
+  friends: [User]!
 }
 
 type UserWithToken {
@@ -52,7 +53,12 @@ type Vehicle {
 }
 
 type Query {
-  findAllUsers: [User]!
+  getFriends(
+    accessToken: String!
+  ): [User]!
+  getVehicles(
+    accessToken: String!
+  ): [Vehicle]!
 }
 
 type Mutation {
@@ -65,10 +71,11 @@ type Mutation {
   refreshTokens(
     refreshToken: String!
   ): UserWithToken!
-  getUserVehicles(
+  addFriend(
     accessToken: String!
-  ): [Vehicle]
+    userId: String!
+  ): User!
   updateUserVehicles(
     accessToken: String!
-  ): [Vehicle]
+  ): [Vehicle]!
 }

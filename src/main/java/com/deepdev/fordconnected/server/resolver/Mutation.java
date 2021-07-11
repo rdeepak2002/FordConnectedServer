@@ -187,22 +187,36 @@ public class Mutation implements GraphQLMutationResolver {
     }
   }
 
-  public List<Vehicle> getUserVehicles(String accessToken) {
-    // check if the access token was generated on this server
+  public User addFriend(String accessToken, String userId) {
+      // get the current time
+      LocalDateTime currentTime = LocalDateTime.now();
+
+    // search for the access token and user from databases
     Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
-    if (possibleAccessToken.isPresent()) {
-      try {
-        // get the access token object
-        AccessToken accessTokenObj = possibleAccessToken.get();
-        // get the user the access token belongs to
-        User userObj = userRepository.findByFordProfileId(accessTokenObj.getFordProfileId()).get();
-        return vehicleRepository.findAllByUserId(userObj.getId());
-      } catch (Exception e) {
-        e.printStackTrace();
-        throw new CustomException(400, "getUserVehicles Error: user does not exist");
+    Optional<User> possibleFriend = userRepository.findById(userId);
+
+    if(possibleAccessToken.isPresent() && possibleFriend.isPresent()) {
+      Optional<User> possibleUser = userRepository.findByFordProfileId(possibleAccessToken.get().getFordProfileId());
+
+      if(possibleUser.isPresent()) {
+        // get the current user and the friend to add
+        User user = possibleUser.get();
+        User friend = possibleFriend.get();
+
+        // update the user in the database
+        List<User> friends = user.getFriends();
+        friends.add(friend);
+        user.setFriends(friends);
+        user.setLastActive(currentTime);
+        user.setUpdatedAt(currentTime);
+        userRepository.save(user);
+
+        // return the friend that was added
+        return friend;
       }
     }
-    throw new CustomException(400, "getUserVehicles Error: invalid access token");
+
+    throw new CustomException(400, "addFriend Error: invalid access token");
   }
 
   public List<Vehicle> updateUserVehicles(String accessToken) {
@@ -321,6 +335,8 @@ public class Mutation implements GraphQLMutationResolver {
 
         // update the user's vehicles
         userObj.setVehicles(vehicles);
+        userObj.setUpdatedAt(currentTime);
+        userObj.setLastActive(currentTime);
         userRepository.save(userObj);
 
         // return all the user's vehicles

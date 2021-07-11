@@ -26,9 +26,11 @@ public class User {
   private LocalDateTime createdAt;
   private LocalDateTime lastActive;
   private List<Vehicle> vehicles;
+  private List<User> friends;
 
   public User() {
     this.vehicles = new ArrayList<Vehicle>();
+    this.friends = new ArrayList<User>();
   }
 
   public void addVehicle(Vehicle vehicle) {
