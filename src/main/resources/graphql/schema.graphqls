@@ -65,6 +65,9 @@ type Mutation {
   refreshTokens(
     refreshToken: String!
   ): UserWithToken!
+  getUserVehicles(
+    accessToken: String!
+  ): [Vehicle]
   updateUserVehicles(
     accessToken: String!
   ): [Vehicle]

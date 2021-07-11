@@ -13,6 +13,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import com.coxautodev.graphql.tools.GraphQLMutationResolver;
@@ -185,7 +186,25 @@ public class Mutation implements GraphQLMutationResolver {
     }
   }
 
-  public Iterable<Vehicle> updateUserVehicles(String accessToken) {
+  public List<Vehicle> getUserVehicles(String accessToken) {
+    // check if the access token was generated on this server
+    Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
+    if (possibleAccessToken.isPresent()) {
+      try {
+        // get the access token object
+        AccessToken accessTokenObj = possibleAccessToken.get();
+        // get the user the access token belongs to
+        User userObj = userRepository.findByFordProfileId(accessTokenObj.getFordProfileId()).get();
+        return vehicleRepository.findAllByUserId(userObj.getId());
+      } catch (Exception e) {
+        e.printStackTrace();
+        throw new CustomException(400, "getUserVehicles Error: user does not exist");
+      }
+    }
+    throw new CustomException(400, "getUserVehicles Error: invalid access token");
+  }
+
+  public List<Vehicle> updateUserVehicles(String accessToken) {
     // get the current time
     LocalDateTime currentTime = LocalDateTime.now();
 
@@ -295,7 +314,7 @@ public class Mutation implements GraphQLMutationResolver {
         }
 
         // return all the user's vehicles
-        return vehicleRepository.findByUserId(userObj.getId());
+        return vehicleRepository.findAllByUserId(userObj.getId());
       } catch (Exception e) {
         e.printStackTrace();
         throw new CustomException(400, "updateUserVehicles Error: invalid access token");

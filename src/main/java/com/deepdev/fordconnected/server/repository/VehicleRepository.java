@@ -3,6 +3,7 @@ package com.deepdev.fordconnected.server.repository;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.deepdev.fordconnected.server.model.Vehicle;
@@ -12,7 +13,7 @@ public interface VehicleRepository extends MongoRepository<Vehicle, String> {
   Optional<Vehicle> findById(String id);
 
   @Query("{'userId' : ?0}")
-  Iterable<Vehicle> findByUserId(String userId);
+  List<Vehicle> findAllByUserId(String userId);
 
   @Query("{'fordProfileId' : ?0}")
   Optional<Vehicle> findByFordProfileId(String fordProfileId);
