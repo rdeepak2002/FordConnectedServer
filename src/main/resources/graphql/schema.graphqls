@@ -81,7 +81,7 @@ type Mutation {
   ): UserWithToken!
   addFriend(
     accessToken: String!
-    userId: String!
+    username: String!
   ): String!
   updateUserVehicles(
     accessToken: String!

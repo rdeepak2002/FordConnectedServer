@@ -191,13 +191,13 @@ public class Mutation implements GraphQLMutationResolver {
     }
   }
 
-  public String addFriend(String accessToken, String userId) {
+  public String addFriend(String accessToken, String username) {
     // get the current time
     LocalDateTime currentTime = LocalDateTime.now();
 
     // search for the access token and user from databases
     Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
-    Optional<User> possibleFriend = userRepository.findById(userId);
+    Optional<User> possibleFriend = userRepository.findByUsername(username);
 
     if (possibleAccessToken.isPresent()) {
       Optional<User> possibleUser = userRepository.findByFordProfileId(possibleAccessToken.get().getFordProfileId());
@@ -206,6 +206,9 @@ public class Mutation implements GraphQLMutationResolver {
         // get the current user and the friend to add
         User user = possibleUser.get();
         User friend = possibleFriend.get();
+
+        // get user's id
+        String userId = user.getId();
 
         Optional<Friend> existingFriendPair = friendRepository.findByUserIds(user.getId(), userId);
         Friend friendPair = existingFriendPair.isPresent() ? existingFriendPair.get() : new Friend(user, friend);
