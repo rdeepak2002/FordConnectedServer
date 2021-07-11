@@ -2,9 +2,9 @@ package com.deepdev.fordconnected.server.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Getter;
@@ -18,19 +18,19 @@ import lombok.ToString;
 public class User {
   @Id
   private String id;
+  @Indexed
   private String username;
   private String firstName;
   private String lastName;
+  @Indexed
   private String fordProfileId;
   private LocalDateTime updatedAt;
   private LocalDateTime createdAt;
   private LocalDateTime lastActive;
-  private List<Vehicle> vehicles;
-  private List<User> friends;
+  private ArrayList<Vehicle> vehicles;
 
   public User() {
     this.vehicles = new ArrayList<Vehicle>();
-    this.friends = new ArrayList<User>();
   }
 
   public void addVehicle(Vehicle vehicle) {
@@ -49,19 +49,19 @@ public class User {
     vehicles.add(vehicle);
   }
 
-  public void addFriend(User friend) {
-    if(friends == null) {
-      this.friends = new ArrayList<User>();
-    }
+  // public void addFriend(Friend friend) {
+  //   if(friends == null) {
+  //     this.friends = new ArrayList<Friend>();
+  //   }
 
-    for(int i = 0; i < friends.size(); i++) {
-      User currentFriend = friends.get(i);
-      if(currentFriend.getId().equals(friend.getId())) {
-        friends.set(i, friend);
-        return;
-      }
-    }
+  //   for(int i = 0; i < friends.size(); i++) {
+  //     Friend currentFriend = friends.get(i);
+  //     // if(currentFriend.equals(friend.getId())) {
+  //     //   friends.set(i, friend.getId());
+  //     //   return;
+  //     // }
+  //   }
 
-    friends.add(friend);
-  }
+  //   friends.add(friend);
+  // }
 }

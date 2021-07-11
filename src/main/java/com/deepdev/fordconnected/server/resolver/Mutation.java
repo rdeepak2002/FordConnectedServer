@@ -20,12 +20,14 @@ import java.util.Optional;
 import com.coxautodev.graphql.tools.GraphQLMutationResolver;
 import com.deepdev.fordconnected.server.exception.CustomException;
 import com.deepdev.fordconnected.server.model.AccessToken;
+import com.deepdev.fordconnected.server.model.Friend;
 import com.deepdev.fordconnected.server.model.User;
 import com.deepdev.fordconnected.server.model.UserWithToken;
 import com.deepdev.fordconnected.server.model.Vehicle;
 import com.deepdev.fordconnected.server.repository.UserRepository;
 import com.deepdev.fordconnected.server.repository.VehicleRepository;
 import com.deepdev.fordconnected.server.repository.AccessTokenRepository;
+import com.deepdev.fordconnected.server.repository.FriendRepository;
 
 @Component
 @SuppressWarnings("deprecation")
@@ -33,13 +35,15 @@ public class Mutation implements GraphQLMutationResolver {
   private UserRepository userRepository;
   private VehicleRepository vehicleRepository;
   private AccessTokenRepository accessTokenRepository;
+  private FriendRepository friendRepository;
 
   @Autowired
   public Mutation(UserRepository userRepository, VehicleRepository vehicleRepository,
-      AccessTokenRepository accessTokenRepository) {
+      AccessTokenRepository accessTokenRepository, FriendRepository friendRepository) {
     this.userRepository = userRepository;
     this.vehicleRepository = vehicleRepository;
     this.accessTokenRepository = accessTokenRepository;
+    this.friendRepository = friendRepository;
   }
 
   public UserWithToken loginUser(String username, String firstName, String lastName, String code) {
@@ -187,7 +191,7 @@ public class Mutation implements GraphQLMutationResolver {
     }
   }
 
-  public User addFriend(String accessToken, String userId) {
+  public String addFriend(String accessToken, String userId) {
     // get the current time
     LocalDateTime currentTime = LocalDateTime.now();
 
@@ -195,7 +199,7 @@ public class Mutation implements GraphQLMutationResolver {
     Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
     Optional<User> possibleFriend = userRepository.findById(userId);
 
-    if (possibleAccessToken.isPresent() && possibleFriend.isPresent()) {
+    if (possibleAccessToken.isPresent()) {
       Optional<User> possibleUser = userRepository.findByFordProfileId(possibleAccessToken.get().getFordProfileId());
 
       if (possibleUser.isPresent()) {
@@ -203,14 +207,18 @@ public class Mutation implements GraphQLMutationResolver {
         User user = possibleUser.get();
         User friend = possibleFriend.get();
 
-        // update the user's friends list in the database
-        user.addFriend(friend);
-        user.setLastActive(currentTime);
-        user.setUpdatedAt(currentTime);
-        userRepository.save(user);
+        Optional<Friend> existingFriendPair = friendRepository.findByUserIds(user.getId(), userId);
+        Friend friendPair = existingFriendPair.isPresent() ? existingFriendPair.get() : new Friend(user, friend);
+        if(existingFriendPair.isPresent() && !existingFriendPair.get().getRequesterUserId().equals(user.getId())) {
+          friendPair.setStatus("ACCEPTED");
+        }
+        else {
+          friendPair.setCreatedAt(currentTime);
+        }
+        friendPair.setUpdatedAt(currentTime);
+        friendRepository.save(friendPair);
 
-        // return the friend that was added
-        return friend;
+        return friendPair.getStatus();
       }
     }
 
@@ -224,7 +232,7 @@ public class Mutation implements GraphQLMutationResolver {
     // check if the access token was generated on this server
     Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
 
-    List<Vehicle> vehicles = new ArrayList<Vehicle>();
+    ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 
     if (possibleAccessToken.isPresent()) {
       try {

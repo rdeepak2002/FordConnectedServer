@@ -1,16 +1,24 @@
 scalar Date
 
+type Friend {
+  id: ID!
+  requesterUserId: String!
+  status: String!
+  pair: [User]!
+  updatedAt: Date
+  createdAt: Date
+}
+
 type User {
   id: ID!
   username: String!
   firstName: String!
   lastName: String!
-  fordProfileId: String!
-  updatedAt: Date!
-  createdAt: Date!
-  lastActive: Date!
+  fordProfileId: String
+  updatedAt: Date
+  createdAt: Date
+  lastActive: Date
   vehicles: [Vehicle]
-  friends: [User]
 }
 
 type UserWithToken {
@@ -55,7 +63,7 @@ type Vehicle {
 type Query {
   getFriends(
     accessToken: String!
-  ): [User]
+  ): [Friend]
   getVehicles(
     accessToken: String!
   ): [Vehicle]
@@ -74,7 +82,7 @@ type Mutation {
   addFriend(
     accessToken: String!
     userId: String!
-  ): User
+  ): String!
   updateUserVehicles(
     accessToken: String!
   ): [Vehicle]
