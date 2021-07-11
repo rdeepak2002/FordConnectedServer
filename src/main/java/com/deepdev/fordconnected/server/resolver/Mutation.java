@@ -203,10 +203,8 @@ public class Mutation implements GraphQLMutationResolver {
         User user = possibleUser.get();
         User friend = possibleFriend.get();
 
-        // update the user in the database
-        List<User> friends = user.getFriends();
-        friends.add(friend);
-        user.setFriends(friends);
+        // update the user's friends list in the database
+        user.addFriend(friend);
         user.setLastActive(currentTime);
         user.setUpdatedAt(currentTime);
         userRepository.save(user);
@@ -216,7 +214,7 @@ public class Mutation implements GraphQLMutationResolver {
       }
     }
 
-    throw new CustomException(400, "addFriend Error: invalid access token");
+    throw new CustomException(400, "addFriend Error: invalid access token or user does not exist");
   }
 
   public List<Vehicle> updateUserVehicles(String accessToken) {

@@ -34,6 +34,34 @@ public class User {
   }
 
   public void addVehicle(Vehicle vehicle) {
+    if(vehicles == null) {
+      this.vehicles = new ArrayList<Vehicle>();
+    }
+
+    for(int i = 0; i < vehicles.size(); i++) {
+      Vehicle currentVehicle = vehicles.get(i);
+      if(currentVehicle.getId().equals(vehicle.getId())) {
+        vehicles.set(i, vehicle);
+        return;
+      }
+    }
+    
     vehicles.add(vehicle);
+  }
+
+  public void addFriend(User friend) {
+    if(friends == null) {
+      this.friends = new ArrayList<User>();
+    }
+
+    for(int i = 0; i < friends.size(); i++) {
+      User currentFriend = friends.get(i);
+      if(currentFriend.getId().equals(friend.getId())) {
+        friends.set(i, friend);
+        return;
+      }
+    }
+
+    friends.add(friend);
   }
 }
