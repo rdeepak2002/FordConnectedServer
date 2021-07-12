@@ -48,20 +48,4 @@ public class User {
     
     vehicles.add(vehicle);
   }
-
-  // public void addFriend(Friend friend) {
-  //   if(friends == null) {
-  //     this.friends = new ArrayList<Friend>();
-  //   }
-
-  //   for(int i = 0; i < friends.size(); i++) {
-  //     Friend currentFriend = friends.get(i);
-  //     // if(currentFriend.equals(friend.getId())) {
-  //     //   friends.set(i, friend.getId());
-  //     //   return;
-  //     // }
-  //   }
-
-  //   friends.add(friend);
-  // }
 }
