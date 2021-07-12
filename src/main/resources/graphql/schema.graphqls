@@ -5,6 +5,7 @@ type Friend {
   requesterUserId: String!
   status: String!
   pair: [User]!
+  pairStr: [String]!
   updatedAt: Date
   createdAt: Date
 }

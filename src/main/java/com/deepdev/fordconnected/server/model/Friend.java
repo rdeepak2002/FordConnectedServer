@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Getter;
@@ -17,16 +17,16 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@CompoundIndexes({
-  @CompoundIndex(name = "friend_pair_userId", def = "{ 'pair.id': 1 }")
-})
 @Document(collection = "friends")
 public class Friend {
   @Id
   private String id;
   private String requesterUserId;
   private String status;
+  @DBRef
   private ArrayList<User> pair;
+  @Indexed
+  private ArrayList<String> pairStr;
   private LocalDateTime updatedAt;
   private LocalDateTime createdAt;
 
@@ -35,6 +35,9 @@ public class Friend {
     this.pair = new ArrayList<User>();
     this.pair.add(friend1);
     this.pair.add(friend2);
+    this.pairStr = new ArrayList<String>();
+    this.pairStr.add(friend1.getId());
+    this.pairStr.add(friend2.getId());
     this.status = "REQUESTED";
   }
 }
