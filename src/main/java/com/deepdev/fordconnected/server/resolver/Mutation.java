@@ -21,6 +21,7 @@ import com.coxautodev.graphql.tools.GraphQLMutationResolver;
 import com.deepdev.fordconnected.server.exception.CustomException;
 import com.deepdev.fordconnected.server.model.AccessToken;
 import com.deepdev.fordconnected.server.model.Friend;
+import com.deepdev.fordconnected.server.model.Post;
 import com.deepdev.fordconnected.server.model.User;
 import com.deepdev.fordconnected.server.model.UserWithToken;
 import com.deepdev.fordconnected.server.model.Vehicle;
@@ -28,6 +29,7 @@ import com.deepdev.fordconnected.server.repository.UserRepository;
 import com.deepdev.fordconnected.server.repository.VehicleRepository;
 import com.deepdev.fordconnected.server.repository.AccessTokenRepository;
 import com.deepdev.fordconnected.server.repository.FriendRepository;
+import com.deepdev.fordconnected.server.repository.PostRepository;
 
 @Component
 @SuppressWarnings("deprecation")
@@ -36,14 +38,16 @@ public class Mutation implements GraphQLMutationResolver {
   private VehicleRepository vehicleRepository;
   private AccessTokenRepository accessTokenRepository;
   private FriendRepository friendRepository;
+  private PostRepository postRepository;
 
   @Autowired
   public Mutation(UserRepository userRepository, VehicleRepository vehicleRepository,
-      AccessTokenRepository accessTokenRepository, FriendRepository friendRepository) {
+      AccessTokenRepository accessTokenRepository, FriendRepository friendRepository, PostRepository postRepository) {
     this.userRepository = userRepository;
     this.vehicleRepository = vehicleRepository;
     this.accessTokenRepository = accessTokenRepository;
     this.friendRepository = friendRepository;
+    this.postRepository = postRepository;
   }
 
   public UserWithToken loginUser(String username, String firstName, String lastName, String code) {
@@ -191,6 +195,41 @@ public class Mutation implements GraphQLMutationResolver {
     }
   }
 
+  public Post createPost(String accessToken, String visibility, String title, String body, ArrayList<String> files) {
+    // get the current time
+    LocalDateTime currentTime = LocalDateTime.now();
+
+    // search for the access token from databases
+    Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
+
+    if (possibleAccessToken.isPresent()) {
+      Optional<User> possibleUser = userRepository.findByFordProfileId(possibleAccessToken.get().getFordProfileId());
+      if (possibleUser.isPresent()) {
+        // get the current user and the friend to add
+        User user = possibleUser.get();
+
+        // create the new post and save it to db
+        Post newPost = new Post();
+
+        newPost.setUserId(user.getId());
+        newPost.setFordProfileId(user.getFordProfileId());
+        newPost.setVisibility(visibility);
+        newPost.setTitle(title);
+        newPost.setBody(body);
+        newPost.setFiles(files);
+        newPost.setUser(user);
+        newPost.setCreatedAt(currentTime);
+        newPost.setUpdatedAt(currentTime);
+
+        postRepository.save(newPost);
+        
+        return newPost;
+      }
+    }
+
+    throw new CustomException(400, "createPost Error: invalid access token or user does not exist");
+  }
+
   public String addFriend(String accessToken, String username) {
     // get the current time
     LocalDateTime currentTime = LocalDateTime.now();
@@ -212,10 +251,9 @@ public class Mutation implements GraphQLMutationResolver {
 
         Optional<Friend> existingFriendPair = friendRepository.findByUserIds(user.getId(), userId);
         Friend friendPair = existingFriendPair.isPresent() ? existingFriendPair.get() : new Friend(user, friend);
-        if(existingFriendPair.isPresent() && !existingFriendPair.get().getRequesterUserId().equals(user.getId())) {
+        if (existingFriendPair.isPresent() && !existingFriendPair.get().getRequesterUserId().equals(user.getId())) {
           friendPair.setStatus("ACCEPTED");
-        }
-        else {
+        } else {
           friendPair.setCreatedAt(currentTime);
         }
         friendPair.setUpdatedAt(currentTime);

@@ -1,5 +1,18 @@
 scalar Date
 
+type Post {
+  id: ID!
+  userId: String!
+  fordProfileId: String!
+  visibility: String!
+  title: String!
+  body: String!
+  files: [String]!
+  user: User!
+  updatedAt: Date
+  createdAt: Date
+}
+
 type Friend {
   id: ID!
   requesterUserId: String!
@@ -87,4 +100,11 @@ type Mutation {
   updateUserVehicles(
     accessToken: String!
   ): [Vehicle]
+  createPost(
+    accessToken: String!
+    visibility: String!
+    title: String!
+    body: String!
+    files: [String]!
+  ): Post!
 }
