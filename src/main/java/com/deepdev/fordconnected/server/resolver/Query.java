@@ -95,16 +95,18 @@ public class Query implements GraphQLQueryResolver {
         posts.addAll(postRepository.findAllByUserId(userObj.getId()));
 
         for(Friend friend : friends) {
-          // find which user in the pair is not the current user
-          User user1 = friend.getPair().get(0);
-          User user2 = friend.getPair().get(1);
+          if(friend.getStatus().equals("ACCEPTED")) {
+            // find which user in the pair is not the current user
+            User user1 = friend.getPair().get(0);
+            User user2 = friend.getPair().get(1);
 
-          if(user1.getId().equals(userObj.getId())) {
-            // user1 is the user, and user2 is the friend
-            posts.addAll(postRepository.findAllByUserId(user2.getId()));
-          }
-          else {
-            posts.addAll(postRepository.findAllByUserId(user1.getId()));
+            if(user1.getId().equals(userObj.getId())) {
+              // user1 is the user, and user2 is the friend
+              posts.addAll(postRepository.findAllByUserId(user2.getId()));
+            }
+            else {
+              posts.addAll(postRepository.findAllByUserId(user1.getId()));
+            }
           }
         }
 
