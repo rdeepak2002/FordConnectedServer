@@ -28,7 +28,8 @@ public class Post {
   private User user;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
-
+  private String type;
+  
   public Post() {
     this.files = new ArrayList<String>();
   }

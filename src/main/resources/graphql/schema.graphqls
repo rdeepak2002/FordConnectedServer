@@ -11,6 +11,7 @@ type Post {
   user: User!
   updatedAt: Date
   createdAt: Date
+  type: String!
 }
 
 type Friend {
@@ -106,5 +107,6 @@ type Mutation {
     title: String!
     body: String!
     files: [String]!
+    type: String!
   ): Post!
 }

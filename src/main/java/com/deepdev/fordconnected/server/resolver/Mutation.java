@@ -195,7 +195,7 @@ public class Mutation implements GraphQLMutationResolver {
     }
   }
 
-  public Post createPost(String accessToken, String visibility, String title, String body, ArrayList<String> files) {
+  public Post createPost(String accessToken, String visibility, String title, String body, ArrayList<String> files, String type) {
     // get the current time
     LocalDateTime currentTime = LocalDateTime.now();
 
@@ -220,6 +220,7 @@ public class Mutation implements GraphQLMutationResolver {
         newPost.setUser(user);
         newPost.setCreatedAt(currentTime);
         newPost.setUpdatedAt(currentTime);
+        newPost.setType(type);
 
         postRepository.save(newPost);
         
