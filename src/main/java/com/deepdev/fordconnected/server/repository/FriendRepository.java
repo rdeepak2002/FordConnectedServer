@@ -15,6 +15,6 @@ public interface FriendRepository extends MongoRepository<Friend, String> {
   @Query("{pairStr: {$all: [?0, ?1]}}")
   Optional<Friend> findByUserIds(String userId1, String userId2);
 
-  @Query("{$and: [{pairStr: {$all: [?0]}}, {status: 'ACCEPTED'}]}")
+  @Query("{pairStr: {$all: [?0]}}")
   List<Friend> findAllByUserId(String userId);
 }
