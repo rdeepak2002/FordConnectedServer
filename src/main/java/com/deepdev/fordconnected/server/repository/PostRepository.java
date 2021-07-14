@@ -17,4 +17,7 @@ public interface PostRepository extends MongoRepository<Post, String> {
 
   @Query("{'fordProfileId' : ?0}")
   Optional<Post> findByFordProfileId(String fordProfileId);
+
+  @Query("{'visibility' : ?0}")
+  List<Post> findAllByVisibility(String visibility);
 }

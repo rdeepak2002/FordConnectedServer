@@ -29,8 +29,18 @@ public class Post {
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
   private String type;
-  
+
   public Post() {
     this.files = new ArrayList<String>();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return (o instanceof Post) && ((Post) o).getId().equals(this.getId());
+  }
+
+  @Override
+  public int hashCode() {
+    return id.hashCode();
   }
 }

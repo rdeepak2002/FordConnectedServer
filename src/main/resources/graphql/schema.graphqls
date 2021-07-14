@@ -82,6 +82,9 @@ type Query {
   getVehicles(
     accessToken: String!
   ): [Vehicle]
+  getPosts(
+    accessToken: String!
+  ): [Post]
 }
 
 type Mutation {
