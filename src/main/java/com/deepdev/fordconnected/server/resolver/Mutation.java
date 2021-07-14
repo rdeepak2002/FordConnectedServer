@@ -202,8 +202,11 @@ public class Mutation implements GraphQLMutationResolver {
     // search for the access token from databases
     Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
 
-    if (possibleAccessToken.isPresent()) {
-      Optional<User> possibleUser = userRepository.findByFordProfileId(possibleAccessToken.get().getFordProfileId());
+    // check if debug account being used
+    boolean isDebugAccount = accessToken.equals("debug");
+
+    if (isDebugAccount || possibleAccessToken.isPresent()) {
+      Optional<User> possibleUser = isDebugAccount ? userRepository.findByUsername("johndoe@gmail.com") : userRepository.findByFordProfileId(possibleAccessToken.get().getFordProfileId());
       if (possibleUser.isPresent()) {
         // get the current user and the friend to add
         User user = possibleUser.get();
@@ -239,8 +242,11 @@ public class Mutation implements GraphQLMutationResolver {
     Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
     Optional<User> possibleFriend = userRepository.findByUsername(username);
 
-    if (possibleAccessToken.isPresent()) {
-      Optional<User> possibleUser = userRepository.findByFordProfileId(possibleAccessToken.get().getFordProfileId());
+    // check if debug account being used
+    boolean isDebugAccount = accessToken.equals("debug");
+
+    if (isDebugAccount || possibleAccessToken.isPresent()) {
+      Optional<User> possibleUser = isDebugAccount ? userRepository.findByUsername("johndoe@gmail.com") : userRepository.findByFordProfileId(possibleAccessToken.get().getFordProfileId());
 
       if (possibleUser.isPresent()) {
         // get the current user and the friend to add
