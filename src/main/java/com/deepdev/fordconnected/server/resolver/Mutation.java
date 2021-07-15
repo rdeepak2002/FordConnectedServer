@@ -276,6 +276,42 @@ public class Mutation implements GraphQLMutationResolver {
     throw new CustomException(400, "addFriend Error: invalid access token or user does not exist");
   }
 
+  public String deleteFriend(String accessToken, String username) {
+    // search for the access token and user from databases
+    Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
+    Optional<User> possibleFriend = userRepository.findByUsername(username);
+
+    // check if debug account being used
+    boolean isDebugAccount = accessToken.equals("debug");
+
+    if (isDebugAccount || possibleAccessToken.isPresent()) {
+      Optional<User> possibleUser = isDebugAccount ? userRepository.findByUsername("johndoe@gmail.com")
+          : userRepository.findByFordProfileId(possibleAccessToken.get().getFordProfileId());
+
+      if (possibleUser.isPresent()) {
+        // get the current user and the friend to add
+        User user = possibleUser.get();
+        User friend = possibleFriend.get();
+
+        // get user's id
+        String userId = user.getId();
+
+        // delete the friend pair
+        Optional<Friend> existingFriendPair = friendRepository.findByUserIds(user.getId(), userId);
+
+        if(existingFriendPair.isPresent()) {
+          friendRepository.delete(existingFriendPair.get());
+
+          return friend.getId();
+        }
+      }
+
+      throw new CustomException(400, "deleteFriend Error: not friends");
+    }
+
+    throw new CustomException(400, "deleteFriend Error: invalid access token or user does not exist");
+  }
+
   public Post deletePost(String accessToken, String postId) {
     // check if the access token was generated on this server
     Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
@@ -290,7 +326,7 @@ public class Mutation implements GraphQLMutationResolver {
       // get the post
       Optional<Post> possiblePost = postRepository.findById(postId);
 
-      if(possibleUser.isPresent() && possiblePost.isPresent()) {
+      if (possibleUser.isPresent() && possiblePost.isPresent()) {
         // get the user
         User user = possibleUser.get();
 
@@ -298,13 +334,12 @@ public class Mutation implements GraphQLMutationResolver {
         Post post = possiblePost.get();
 
         // delete the post
-        if(user.getId().equals(post.getUserId())) {
+        if (user.getId().equals(post.getUserId())) {
           postRepository.delete(post);
           return post;
         }
         throw new CustomException(400, "deletePost Error: unauthorized");
-      }
-      else {
+      } else {
         throw new CustomException(400, "deletePost Error: post or user does not exist");
       }
     }

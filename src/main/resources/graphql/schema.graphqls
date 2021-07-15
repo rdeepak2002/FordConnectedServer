@@ -102,6 +102,10 @@ type Mutation {
     accessToken: String!
     username: String!
   ): String!
+  deleteFriend(
+    accessToken: String!
+    username: String!
+  ): String!
   updateUserVehicles(
     accessToken: String!
   ): [Vehicle]
