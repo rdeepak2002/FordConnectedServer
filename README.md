@@ -12,7 +12,7 @@ Deepak Ramalingam
 
 Hackathon project for the [Ford Smart Vehicle Connectivity Challenge](https://fordsmart.devpost.com/)
 
-## Requirements (iOS)
+## Requirements
 
 - JAVA
 - Maven
