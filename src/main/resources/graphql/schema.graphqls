@@ -34,6 +34,7 @@ type User {
   createdAt: Date
   lastActive: Date
   vehicles: [Vehicle]
+  profilePictureUrl: String
 }
 
 type UserWithToken {

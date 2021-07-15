@@ -30,9 +30,11 @@ public class User {
   private LocalDateTime lastActive;
   @DBRef
   private ArrayList<Vehicle> vehicles;
+  private String profilePictureUrl;
 
   public User() {
     this.vehicles = new ArrayList<Vehicle>();
+    this.profilePictureUrl = "https://firebasestorage.googleapis.com/v0/b/ford-connected.appspot.com/o/blank-profile.png?alt=media&token=46bcf065-df1f-40f2-94c6-a33c58f39556";
   }
 
   public void addVehicle(Vehicle vehicle) {
