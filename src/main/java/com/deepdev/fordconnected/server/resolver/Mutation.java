@@ -276,6 +276,42 @@ public class Mutation implements GraphQLMutationResolver {
     throw new CustomException(400, "addFriend Error: invalid access token or user does not exist");
   }
 
+  public Post deletePost(String accessToken, String postId) {
+    // check if the access token was generated on this server
+    Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
+
+    if (possibleAccessToken.isPresent()) {
+      // get the access token
+      AccessToken accessTokenObj = possibleAccessToken.get();
+
+      // get the user the access token belongs to
+      Optional<User> possibleUser = userRepository.findByFordProfileId(accessTokenObj.getFordProfileId());
+
+      // get the post
+      Optional<Post> possiblePost = postRepository.findById(postId);
+
+      if(possibleUser.isPresent() && possiblePost.isPresent()) {
+        // get the user
+        User user = possibleUser.get();
+
+        // get the post
+        Post post = possiblePost.get();
+
+        // delete the post
+        if(user.getId().equals(post.getUserId())) {
+          postRepository.delete(post);
+          return post;
+        }
+        throw new CustomException(400, "deletePost Error: unauthorized");
+      }
+      else {
+        throw new CustomException(400, "deletePost Error: post or user does not exist");
+      }
+    }
+
+    throw new CustomException(400, "deletePost Error: invalid access token");
+  }
+
   public List<Vehicle> updateUserVehicles(String accessToken) {
     // get the current time
     LocalDateTime currentTime = LocalDateTime.now();

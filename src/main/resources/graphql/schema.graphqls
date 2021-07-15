@@ -112,4 +112,8 @@ type Mutation {
     files: [String]!
     type: String!
   ): Post!
+  deletePost(
+    accessToken: String!
+    postId: String!
+  ): Post!
 }
