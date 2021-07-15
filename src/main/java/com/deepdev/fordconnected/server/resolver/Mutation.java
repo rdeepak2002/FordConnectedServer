@@ -207,7 +207,7 @@ public class Mutation implements GraphQLMutationResolver {
     boolean isDebugAccount = accessToken.equals("debug");
 
     if (isDebugAccount || possibleAccessToken.isPresent()) {
-      Optional<User> possibleUser = isDebugAccount ? userRepository.findByUsername("johndoe@gmail.com")
+      Optional<User> possibleUser = isDebugAccount ? userRepository.findByUsername("miguel@gmail.com")
           : userRepository.findByFordProfileId(possibleAccessToken.get().getFordProfileId());
       if (possibleUser.isPresent()) {
         // get the current user and the friend to add
@@ -248,7 +248,7 @@ public class Mutation implements GraphQLMutationResolver {
     boolean isDebugAccount = accessToken.equals("debug");
 
     if (isDebugAccount || possibleAccessToken.isPresent()) {
-      Optional<User> possibleUser = isDebugAccount ? userRepository.findByUsername("johndoe@gmail.com")
+      Optional<User> possibleUser = isDebugAccount ? userRepository.findByUsername("miguel@gmail.com")
           : userRepository.findByFordProfileId(possibleAccessToken.get().getFordProfileId());
 
       if (possibleUser.isPresent()) {
@@ -285,7 +285,7 @@ public class Mutation implements GraphQLMutationResolver {
     boolean isDebugAccount = accessToken.equals("debug");
 
     if (isDebugAccount || possibleAccessToken.isPresent()) {
-      Optional<User> possibleUser = isDebugAccount ? userRepository.findByUsername("johndoe@gmail.com")
+      Optional<User> possibleUser = isDebugAccount ? userRepository.findByUsername("miguel@gmail.com")
           : userRepository.findByFordProfileId(possibleAccessToken.get().getFordProfileId());
 
       if (possibleUser.isPresent()) {
