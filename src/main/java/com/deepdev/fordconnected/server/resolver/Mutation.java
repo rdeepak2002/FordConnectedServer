@@ -299,7 +299,7 @@ public class Mutation implements GraphQLMutationResolver {
         // delete the friend pair
         Optional<Friend> existingFriendPair = friendRepository.findByUserIds(user.getId(), userId);
 
-        if(existingFriendPair.isPresent()) {
+        if (existingFriendPair.isPresent()) {
           friendRepository.delete(existingFriendPair.get());
 
           return friend.getId();
@@ -540,5 +540,29 @@ public class Mutation implements GraphQLMutationResolver {
     } catch (Exception e) {
       throw new CustomException(400, "getVehicleInformation Error: invalid access token");
     }
+  }
+
+  public User setProfilePhoto(String accessToken, String photoUri) {
+    // check if the access token was generated on this server
+    Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
+
+    if (possibleAccessToken.isPresent()) {
+      // get the access token
+      AccessToken accessTokenObj = possibleAccessToken.get();
+
+      // get the user the access token belongs to
+      Optional<User> possibleUser = userRepository.findByFordProfileId(accessTokenObj.getFordProfileId());
+
+      // update profile photo of user
+      if (possibleUser.isPresent()) {
+        User user = possibleUser.get();
+        user.setProfilePictureUrl(photoUri);
+        userRepository.save(user);
+
+        return user;
+      }
+    }
+
+    throw new CustomException(400, "setProfilePhoto Error: invalid access token");
   }
 }

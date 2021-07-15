@@ -94,17 +94,16 @@ public class Query implements GraphQLQueryResolver {
 
         posts.addAll(postRepository.findAllByUserId(userObj.getId()));
 
-        for(Friend friend : friends) {
-          if(friend.getStatus().equals("ACCEPTED")) {
+        for (Friend friend : friends) {
+          if (friend.getStatus().equals("ACCEPTED")) {
             // find which user in the pair is not the current user
             User user1 = friend.getPair().get(0);
             User user2 = friend.getPair().get(1);
 
-            if(user1.getId().equals(userObj.getId())) {
+            if (user1.getId().equals(userObj.getId())) {
               // user1 is the user, and user2 is the friend
               posts.addAll(postRepository.findAllByUserId(user2.getId()));
-            }
-            else {
+            } else {
               posts.addAll(postRepository.findAllByUserId(user1.getId()));
             }
           }
@@ -113,7 +112,7 @@ public class Query implements GraphQLQueryResolver {
         // convert set to a list
         List<Post> postList = new ArrayList<Post>();
 
-        for(Post post : posts) {
+        for (Post post : posts) {
           postList.add(post);
         }
 
@@ -131,5 +130,26 @@ public class Query implements GraphQLQueryResolver {
       }
     }
     throw new CustomException(400, "getPosts Error: invalid access token");
+  }
+
+  public User getUser(String accessToken) {
+    // check if the access token was generated on this server
+    Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
+
+    if (possibleAccessToken.isPresent()) {
+      // get the access token
+      AccessToken accessTokenObj = possibleAccessToken.get();
+
+      // get the user the access token belongs to
+      Optional<User> possibleUser = userRepository.findByFordProfileId(accessTokenObj.getFordProfileId());
+
+      // update profile photo of user
+      if (possibleUser.isPresent()) {
+        User user = possibleUser.get();
+        return user;
+      }
+    }
+
+    throw new CustomException(400, "getUser Error: invalid access token");
   }
 }
