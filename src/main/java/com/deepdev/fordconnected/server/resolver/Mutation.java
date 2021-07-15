@@ -543,6 +543,9 @@ public class Mutation implements GraphQLMutationResolver {
   }
 
   public User setProfilePhoto(String accessToken, String photoUri) {
+    // get the current time
+    LocalDateTime currentTime = LocalDateTime.now();
+
     // check if the access token was generated on this server
     Optional<AccessToken> possibleAccessToken = accessTokenRepository.findById(accessToken);
 
@@ -557,6 +560,8 @@ public class Mutation implements GraphQLMutationResolver {
       if (possibleUser.isPresent()) {
         User user = possibleUser.get();
         user.setProfilePictureUrl(photoUri);
+        user.setUpdatedAt(currentTime);
+        user.setLastActive(currentTime);
         userRepository.save(user);
 
         return user;
